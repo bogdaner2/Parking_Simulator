@@ -25,12 +25,12 @@ namespace ParkingSimulator
             parking.AddCar(new Car(600, Car.CarType.Passenger));
             parking.AddCar(new Car(600, Car.CarType.Truck));
 
-            var timerCharge = new Timer(
-                e => ChargeAFee(parking),
-                null,
-                TimeSpan.Zero,
-                TimeSpan.FromSeconds(parking.Settings.Timeout));
-            Console.ReadLine(); 
+            Menu.GetMenu();
+            //var timerCharge = new Timer(
+            //    e => ChargeAFee(parking),
+            //    null,
+            //    TimeSpan.Zero,
+            //    TimeSpan.FromSeconds(parking.Settings.Timeout));
         }
 
         public static void ChargeAFee(Parking parking)
