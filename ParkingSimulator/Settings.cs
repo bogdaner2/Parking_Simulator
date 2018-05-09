@@ -1,12 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ParkingSimulator
 {
     internal class Settings
     {
-        public int Timeout { get; set; }
-        public Dictionary<int,string> Type { get; set; }
-        public int ParkingPlace { get; set; }
-        public int Fire { get; set; }
+
+        public int Timeout { get; }
+        public Dictionary<int,Car.CarType> Type { get; }
+        public int ParkingPlace { get; }
+        public int Fire { get; }
+
+        private static readonly Lazy<Settings> Lazy = new Lazy<Settings>(() => new Settings());
+        public static Settings Instance => Lazy.Value;
+        private Settings()
+        {
+            
+        }
     }
 }
