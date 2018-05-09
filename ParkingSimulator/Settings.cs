@@ -7,7 +7,7 @@ namespace ParkingSimulator
     {
 
         public int Timeout { get; private set; }
-        public Dictionary<int,Car.CarType> Prices { get; private set; }
+        public Dictionary<Car.CarType,int> Prices { get; private set; }
         public int ParkingPlace { get; private set; }
         public double Fine { get; private set; }
 
@@ -15,7 +15,7 @@ namespace ParkingSimulator
         public static Settings Instance => Lazy.Value;
         private Settings() { }
 
-        public void SetSettings(int timeout,int parkingplace,Dictionary<int,Car.CarType> prices,double fine)
+        public void SetSettings(int timeout,int parkingplace,Dictionary<Car.CarType,int> prices,double fine)
         {
             Timeout = timeout;
             Prices = prices;
