@@ -47,9 +47,5 @@ namespace ParkingSimulator
             }
         }
 
-        public void ChargeAFee()
-        {
-
-        }
     }
 }

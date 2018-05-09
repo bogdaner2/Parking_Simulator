@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections;
 
 namespace ParkingSimulator
 {
-    internal class Car
+    internal class Car 
     {
         public Guid Id { get; set; }
         public int CarBalance { get; set; }
