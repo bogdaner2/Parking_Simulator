@@ -6,7 +6,9 @@ namespace ParkingSimulator
     {
         static void Main(string[] args)
         {
-            var settings = Settings.Instance;
+            var parking = Parking.Instance;
+            parking.Balance = 500;
+            Console.WriteLine(parking.Balance);
             Console.ReadLine(); 
         }
     }
