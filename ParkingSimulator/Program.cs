@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace ParkingSimulator
 {
@@ -8,8 +9,17 @@ namespace ParkingSimulator
         {
             var parking = Parking.Instance;
             parking.Balance = 500;
-            Console.WriteLine(parking.Balance);
+            var timer = new Timer(
+                e => Log(),
+                null,
+                TimeSpan.Zero,
+                TimeSpan.FromMinutes(1));   
             Console.ReadLine(); 
+        }
+
+        public static void Log()
+        {
+
         }
     }
 }

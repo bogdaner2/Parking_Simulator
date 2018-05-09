@@ -5,10 +5,8 @@ namespace ParkingSimulator
 {
     internal class Parking
     {
-        public List<Car> Cars { get; set; }
-
-        public List<Transaction> Transactions { get; set; }
-
+        public List<Car> Cars { get; }
+        public List<Transaction> Transactions { get; }
         public int Balance { get; set; }
 
         private static readonly Lazy<Parking> Lazy = new Lazy<Parking>(() => new Parking());
@@ -17,6 +15,15 @@ namespace ParkingSimulator
         {
             Cars = new List<Car>();
             Transactions = new List<Transaction>();
+        }
+
+        public void AddCar(Car car)
+        {
+            Cars.Add(car);
+        }
+        public void RemoveCar(Car car)
+        {
+                Cars.Remove(car);
         }
     }
 }
