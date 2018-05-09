@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace ParkingSimulator
 {
@@ -21,8 +23,20 @@ namespace ParkingSimulator
             parking.AddCar(new Car(600, Car.CarType.Motorcycle));
             parking.AddCar(new Car(600, Car.CarType.Passenger));
             parking.AddCar(new Car(600, Car.CarType.Truck));
+            while (true)
+            {
+                try
+                {
+                    Menu.GetMenu();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Please, enter any key for continue");
+                    Console.ReadKey();
+                }
+            }
 
-            Menu.GetMenu();
             //var timerCharge = new Timer(
             //    e => ChargeAFee(parking),
             //    null,

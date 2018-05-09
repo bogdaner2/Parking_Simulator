@@ -4,6 +4,7 @@ namespace ParkingSimulator
 {
     internal static class Menu
     {
+        private static Parking _parking = Parking.Instance;
         public static void GetMenu()
         {
             do
@@ -22,28 +23,49 @@ namespace ParkingSimulator
                 switch (choise)
                 {
                     case 1:
+                        Console.Clear();
                         AddCar_Menu();
                         break;
+                    case 6:
+                        Console.Clear();
+                        ShowFreeSpots_Menu();
+                        break;         
                     case 8:
                         ShowCars_Menu();
                         break;
-                        
+                    default:
+                        throw new Exception("Incorrect data.Please,try it again");     
                 }
                 Console.WriteLine("Please, for exit enter ESCAPE and to continue - any other key ");
-            }   while (Console.ReadKey().Key != ConsoleKey.Escape);
+            }
+            while (Console.ReadKey().Key != ConsoleKey.Escape);
+            Environment.Exit(0);
         }
 
         private static void AddCar_Menu()
         {
-            Console.WriteLine("Select car type:\n +" +
+            Console.WriteLine("Select car type:\n" +
                               "1)Passenger\n" +
                               "2)Truck \n" +
                               "3)Bus \n" +
                               "4)Motorcycle");
             int.TryParse(Console.ReadLine(), out int type);
+            if(type < 1 || type > 4) { throw new Exception(); }
             Console.WriteLine("Input balance");
             int.TryParse(Console.ReadLine(), out int balance);
             Parking.Instance.AddCar(new Car(balance, (Car.CarType) Enum.Parse(typeof(Car.CarType), (type-1).ToString())));
+        }
+
+        private static void RemoveCar_Menu()
+        {
+
+        }
+
+        private static void ShowFreeSpots_Menu()
+        {
+            Console.WriteLine(
+                string.Format($"On parking {_parking.Cars.Count} cars | " +
+                              $"Free spots : {_parking.Settings.ParkingPlace - _parking.Cars.Count}"));
         }
 
         private static void ShowCars_Menu()

@@ -67,10 +67,5 @@ namespace ParkingSimulator
                 Console.WriteLine("Refill your balance and try again.");
             }
         }
-        public void GetAmount()
-        {
-            Console.WriteLine(
-                string.Format($"On parking {Cars.Count} cars | Free spots : {Settings.ParkingPlace - Cars.Count}"));
-        }
     }
 }
