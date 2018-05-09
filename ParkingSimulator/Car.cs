@@ -5,9 +5,9 @@ namespace ParkingSimulator
 {
     internal class Car 
     {
-        public Guid Id { get; set; }
-        public int CarBalance { get; set; }
-        public CarType TypeOfTransport { get; set; }
+        public Guid Id { get; }
+        public double CarBalance { get; set; }
+        public CarType TypeOfTransport { get; }
 
         public Car(int balance,CarType type)
         {
