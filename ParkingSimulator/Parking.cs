@@ -14,7 +14,7 @@ namespace ParkingSimulator
         private static readonly Lazy<Parking> Lazy = new Lazy<Parking>(() => new Parking());
         public static Parking Instance => Lazy.Value;
         public List<Car> Cars { get; }
-        public ObservableCollection<Transaction> Transactions{ get { return _transactions; } }
+        public ObservableCollection<Transaction> Transactions => _transactions;
         public double Balance { get; set; }
         public Settings Settings { get; }
 

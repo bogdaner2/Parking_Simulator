@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace ParkingSimulator
 {
@@ -99,35 +100,27 @@ namespace ParkingSimulator
         }
         private static void RemoveCar_Menu()
         {
-            int itterator = 0;
             Console.WriteLine("Select car number for remove:");
-            foreach (var car in _parking.Cars)
-            {
-                itterator++;
-                Console.WriteLine($"{itterator}){car}");
-            }
-            int.TryParse(Console.ReadLine(), out int choise);
-            var choisenCar = _parking.Cars[choise-1];
-            if (choisenCar.CarBalance < 0)
+            ShowCars_Menu();
+            CarSelection(out Car chosenCar);
+            if (chosenCar.CarBalance < 0)
             {
                 throw new Exception("Car balance is insufficient.Please recharge balance and try again");
             }
-            _parking.Cars.Remove(choisenCar);
-            Console.WriteLine($"Car {choisenCar.Id} was removed");
-
+            _parking.Cars.Remove(chosenCar);
+            Console.WriteLine("Car id: " +
+                              chosenCar.Id.ToString()
+                              .Substring(chosenCar.Id.ToString().Length - 5) +
+                              " was removed");
         }
         private static void RechargeBalance_Menu()
         {
-            int itterator = 0;
             Console.WriteLine("Choose car balance for recharging :");
-            foreach (var car in _parking.Cars)
-            {
-                itterator++;
-                Console.WriteLine($"{itterator}){car}");
-            }
-            int.TryParse(Console.ReadLine(), out int choise);
-            var choisenCar = _parking.Cars[choise - 1];
-
+            ShowCars_Menu();
+            CarSelection(out Car chosenCar);
+            Console.WriteLine("Input the amount of the replenishment");
+            int.TryParse(Console.ReadLine(), out int amount);
+            chosenCar.RechargeBalance(amount);
         }
         private static void ShowFreeSpots_Menu()
         {
@@ -137,10 +130,19 @@ namespace ParkingSimulator
         }
         private static void ShowCars_Menu()
         {
-            foreach (var car in Parking.Instance.Cars)
+            int itterator = 0;
+            foreach (var car in _parking.Cars)
             {
-                Console.WriteLine(car.ToString());
+                itterator++;
+                Console.WriteLine($"{itterator}){car}");
             }
+        }
+
+        private static void CarSelection(out Car chosenCar)
+        {
+            int.TryParse(Console.ReadLine(), out int choise);
+            if (choise <= 0 || choise > _parking.Cars.Count) { throw new Exception("There is no such number of сar.Please,try again"); }
+            chosenCar = _parking.Cars[choise - 1];
         }
     }
 }

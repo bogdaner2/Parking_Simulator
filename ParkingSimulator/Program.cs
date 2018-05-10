@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace ParkingSimulator
 {
@@ -22,6 +25,11 @@ namespace ParkingSimulator
             parking.AddCar(new Car(600, Car.CarType.Motorcycle));
             parking.AddCar(new Car(600, Car.CarType.Passenger));
             parking.AddCar(new Car(600, Car.CarType.Truck));
+            //var timerCharge = new Timer(
+            //    e => Console.WriteLine(DateTime.Now),
+            //    null,
+            //    TimeSpan.Zero,
+            //    TimeSpan.FromSeconds(parking.Settings.Timeout));
             while (true)
             {
                 try
@@ -35,12 +43,6 @@ namespace ParkingSimulator
                     Console.ReadKey();
                 }
             }
-
-            //var timerCharge = new Timer(
-            //    e => ChargeAFee(parking),
-            //    null,
-            //    TimeSpan.Zero,
-            //    TimeSpan.FromSeconds(parking.Settings.Timeout));
         }
 
         public static void ChargeAFee(Parking parking)
@@ -51,16 +53,14 @@ namespace ParkingSimulator
                 if (car.CarBalance > 0)
                 {
                     fee = parking.Settings.Prices[car.TypeOfTransport];
-                    car.CarBalance -= fee;
+                    car.Withdraw(fee);
                 }
                 else
                 {
                     fee = parking.Settings.Prices[car.TypeOfTransport]* parking.Settings.Fine;
-                    car.CarBalance -= fee;
+                    car.Withdraw(fee);
                 }
-
-                parking.Balance += fee;
-                Parking.Instance.Transactions.Add(new Transaction(car.Id,fee));
+                parking.Balance += fee;            
             }
         }
     }
