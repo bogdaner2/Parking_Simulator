@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace ParkingSimulator
 {
@@ -34,6 +35,10 @@ namespace ParkingSimulator
                         Console.Clear();
                         RechargeBalance_Menu();
                         break;
+                    case 4:
+                        Console.Clear();
+                        ShowLastMinuteLog_Menu();
+                        break;
                     case 5:
                         Console.Clear();
                         ShowBalance_Menu();
@@ -41,7 +46,11 @@ namespace ParkingSimulator
                     case 6:
                         Console.Clear();
                         ShowFreeSpots_Menu();
-                        break;         
+                        break;
+                    case 7:
+                        Console.Clear();
+                        ShowLog_Menu();
+                        break;
                     case 8:
                         Console.Clear();
                         ShowCars_Menu();
@@ -55,11 +64,26 @@ namespace ParkingSimulator
             Environment.Exit(0);
         }
 
-        private static void ShowBalance_Menu()
+        private static void ShowLastMinuteLog_Menu()
         {
-            Console.WriteLine("Parking balance: " + _parking.Balance.ToString());
+            throw new NotImplementedException();
         }
 
+        private static void ShowLog_Menu()
+        {
+            using (StreamReader stream = new StreamReader("Transactions.log"))
+            {
+                while ((stream.ReadLine()) != null)
+                {
+                    Console.WriteLine(stream.ReadLine());
+                }
+            }
+        }
+
+        private static void ShowBalance_Menu()
+        {
+            Console.WriteLine("Parking balance: " + _parking.Balance);
+        }
         private static void AddCar_Menu()
         {
             Console.WriteLine("Select car type:\n" +
@@ -73,7 +97,6 @@ namespace ParkingSimulator
             int.TryParse(Console.ReadLine(), out int balance);
             Parking.Instance.AddCar(new Car(balance, (Car.CarType) Enum.Parse(typeof(Car.CarType), (type-1).ToString())));
         }
-
         private static void RemoveCar_Menu()
         {
             int itterator = 0;
@@ -93,7 +116,6 @@ namespace ParkingSimulator
             Console.WriteLine($"Car {choisenCar.Id} was removed");
 
         }
-
         private static void RechargeBalance_Menu()
         {
             int itterator = 0;
@@ -107,14 +129,12 @@ namespace ParkingSimulator
             var choisenCar = _parking.Cars[choise - 1];
 
         }
-
         private static void ShowFreeSpots_Menu()
         {
             Console.WriteLine(
                 string.Format($"On parking {_parking.Cars.Count} cars | " +
                               $"Free spots : {_parking.Settings.ParkingPlace - _parking.Cars.Count}"));
         }
-
         private static void ShowCars_Menu()
         {
             foreach (var car in Parking.Instance.Cars)

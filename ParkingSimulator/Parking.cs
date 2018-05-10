@@ -56,16 +56,5 @@ namespace ParkingSimulator
                 Console.WriteLine("Maximum number of seats occupied");
             }
         }
-        public void RemoveCar(Car car)
-        {
-            if (car.CarBalance > 0)
-            {
-                Cars.Remove(car);
-            }
-            else
-            {
-                Console.WriteLine("Refill your balance and try again.");
-            }
-        }
     }
 }
