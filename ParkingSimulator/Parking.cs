@@ -14,7 +14,7 @@ namespace ParkingSimulator
         private static readonly Lazy<Parking> Lazy = new Lazy<Parking>(() => new Parking());
         public static Parking Instance => Lazy.Value;
         public List<Car> Cars { get; }
-        public ObservableCollection<Transaction> Transactions{ get { return _transactions; } }
+        public ObservableCollection<Transaction> Transactions => _transactions;
         public double Balance { get; set; }
         public Settings Settings { get; }
 
@@ -55,22 +55,6 @@ namespace ParkingSimulator
             else {
                 Console.WriteLine("Maximum number of seats occupied");
             }
-        }
-        public void RemoveCar(Car car)
-        {
-            if (car.CarBalance > 0)
-            {
-                Cars.Remove(car);
-            }
-            else
-            {
-                Console.WriteLine("Refill your balance and try again.");
-            }
-        }
-        public void GetAmount()
-        {
-            Console.WriteLine(
-                string.Format($"On parking {Cars.Count} cars | Free spots : {Settings.ParkingPlace - Cars.Count}"));
         }
     }
 }
