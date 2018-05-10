@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.InteropServices;
+using System.IO;
 using System.Threading;
 
 namespace ParkingSimulator
@@ -21,15 +20,21 @@ namespace ParkingSimulator
                 },
                 0.3 );
             var parking = Parking.Instance;
-            parking.AddCar(new Car(600,Car.CarType.Bus));
-            parking.AddCar(new Car(600, Car.CarType.Motorcycle));
-            parking.AddCar(new Car(600, Car.CarType.Passenger));
-            parking.AddCar(new Car(600, Car.CarType.Truck));
-            //var timerCharge = new Timer(
-            //    e => Console.WriteLine(DateTime.Now),
-            //    null,
-            //    TimeSpan.Zero,
-            //    TimeSpan.FromSeconds(parking.Settings.Timeout));
+            parking.Cars.Add(new Car(600,Car.CarType.Bus));
+            parking.Cars.Add(new Car(600, Car.CarType.Motorcycle));
+            parking.Cars.Add(new Car(600, Car.CarType.Passenger));
+            parking.Cars.Add(new Car(600, Car.CarType.Truck));
+            var earnedForOneMinute = 0.0;
+            var timerLog = new Timer(
+                e => Log(ref earnedForOneMinute),
+                null,
+                TimeSpan.Zero,
+                TimeSpan.FromMinutes(1));
+            var timerCharge = new Timer(
+                e => ChargeAFee(parking,ref earnedForOneMinute),
+                null,
+                TimeSpan.Zero,
+                TimeSpan.FromSeconds(parking.Settings.Timeout));
             while (true)
             {
                 try
@@ -45,7 +50,7 @@ namespace ParkingSimulator
             }
         }
 
-        public static void ChargeAFee(Parking parking)
+        public static void ChargeAFee(Parking parking,ref double earned)
         {
             foreach (var car in parking.Cars)
             {
@@ -60,8 +65,24 @@ namespace ParkingSimulator
                     fee = parking.Settings.Prices[car.TypeOfTransport]* parking.Settings.Fine;
                     car.Withdraw(fee);
                 }
-                parking.Balance += fee;            
+                parking.Balance += fee;
+                earned += fee;
+                parking.AddTransaction(car.Id,fee);
             }
+        }
+
+        public static void Log(ref double earnedAmount)
+        {
+            using (StreamWriter streamWriter = File.AppendText("Transactions.log"))
+            {
+                streamWriter.WriteLine("Parking earned : {0} ",earnedAmount);
+                streamWriter.WriteLine("{0} {1}", DateTime.Now.ToLongTimeString(),
+                    DateTime.Now.ToLongDateString());
+                streamWriter.WriteLine("-------------------------------");
+            }
+            earnedAmount = 0;
         }
     }
 }
+
+

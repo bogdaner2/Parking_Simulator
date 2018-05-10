@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Xml.Serialization;
 
 namespace ParkingSimulator
 {
@@ -67,17 +69,18 @@ namespace ParkingSimulator
 
         private static void ShowLastMinuteLog_Menu()
         {
-            throw new NotImplementedException();
+            foreach (var transaction in _parking.Transactions)
+            {
+                Console.WriteLine(transaction);
+            }
         }
 
         private static void ShowLog_Menu()
         {
             using (StreamReader stream = new StreamReader("Transactions.log"))
             {
-                while ((stream.ReadLine()) != null)
-                {
-                    Console.WriteLine(stream.ReadLine());
-                }
+                var log = stream.ReadToEnd();
+                Console.WriteLine(log);
             }
         }
 
@@ -96,7 +99,17 @@ namespace ParkingSimulator
             if(type < 1 || type > 4) { throw new Exception(); }
             Console.WriteLine("Input balance");
             int.TryParse(Console.ReadLine(), out int balance);
-            Parking.Instance.AddCar(new Car(balance, (Car.CarType) Enum.Parse(typeof(Car.CarType), (type-1).ToString())));
+            if (_parking.Settings.ParkingPlace > _parking.Cars.Count)
+            {
+                _parking.Cars.Add(
+                    new Car(balance, 
+                           (Car.CarType)Enum.Parse(typeof(Car.CarType),
+                           (type - 1).ToString())));
+            }
+            else
+            {
+                Console.WriteLine("Maximum number of seats occupied");
+            }
         }
         private static void RemoveCar_Menu()
         {
@@ -144,5 +157,12 @@ namespace ParkingSimulator
             if (choise <= 0 || choise > _parking.Cars.Count) { throw new Exception("There is no such number of сar.Please,try again"); }
             chosenCar = _parking.Cars[choise - 1];
         }
+
+        public static void LoadCars() { }
+
+        public static void SaveCars() { }
+
+        public static void LoadSettings() { }
+        
     }
 }
