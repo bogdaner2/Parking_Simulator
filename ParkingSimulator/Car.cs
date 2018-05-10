@@ -23,5 +23,11 @@ namespace ParkingSimulator
             Bus,
             Motorcycle
         }
+
+        public override string ToString()
+        {
+            string id = Id.ToString().Substring(Id.ToString().Length - 5);
+            return string.Format($"Id:{id} Balance:{CarBalance} Type {TypeOfTransport}");
+        }
     }
 }

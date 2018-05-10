@@ -26,11 +26,24 @@ namespace ParkingSimulator
                         Console.Clear();
                         AddCar_Menu();
                         break;
+                    case 2:
+                        Console.Clear();
+                        RemoveCar_Menu();
+                        break;
+                    case 3:
+                        Console.Clear();
+                        RechargeBalance_Menu();
+                        break;
+                    case 5:
+                        Console.Clear();
+                        ShowBalance_Menu();
+                        break;                     
                     case 6:
                         Console.Clear();
                         ShowFreeSpots_Menu();
                         break;         
                     case 8:
+                        Console.Clear();
                         ShowCars_Menu();
                         break;
                     default:
@@ -40,6 +53,11 @@ namespace ParkingSimulator
             }
             while (Console.ReadKey().Key != ConsoleKey.Escape);
             Environment.Exit(0);
+        }
+
+        private static void ShowBalance_Menu()
+        {
+            Console.WriteLine("Parking balance: " + _parking.Balance.ToString());
         }
 
         private static void AddCar_Menu()
@@ -58,6 +76,35 @@ namespace ParkingSimulator
 
         private static void RemoveCar_Menu()
         {
+            int itterator = 0;
+            Console.WriteLine("Select car number for remove:");
+            foreach (var car in _parking.Cars)
+            {
+                itterator++;
+                Console.WriteLine($"{itterator}){car}");
+            }
+            int.TryParse(Console.ReadLine(), out int choise);
+            var choisenCar = _parking.Cars[choise-1];
+            if (choisenCar.CarBalance < 0)
+            {
+                throw new Exception("Car balance is insufficient.Please recharge balance and try again");
+            }
+            _parking.Cars.Remove(choisenCar);
+            Console.WriteLine($"Car {choisenCar.Id} was removed");
+
+        }
+
+        private static void RechargeBalance_Menu()
+        {
+            int itterator = 0;
+            Console.WriteLine("Choose car balance for recharging :");
+            foreach (var car in _parking.Cars)
+            {
+                itterator++;
+                Console.WriteLine($"{itterator}){car}");
+            }
+            int.TryParse(Console.ReadLine(), out int choise);
+            var choisenCar = _parking.Cars[choise - 1];
 
         }
 
@@ -72,7 +119,7 @@ namespace ParkingSimulator
         {
             foreach (var car in Parking.Instance.Cars)
             {
-                Console.WriteLine(car.TypeOfTransport.ToString());
+                Console.WriteLine(car.ToString());
             }
         }
     }
