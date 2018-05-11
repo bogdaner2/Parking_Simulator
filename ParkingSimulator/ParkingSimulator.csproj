@@ -20,4 +20,13 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Cars.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ParkingSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
