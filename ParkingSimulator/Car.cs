@@ -2,11 +2,12 @@
 
 namespace ParkingSimulator
 {
-    internal class Car 
+    [Serializable]
+    public class Car 
     {
-        public Guid Id { get; }
-        public double CarBalance { get;private set; }
-        public CarType TypeOfTransport { get; }
+        public Guid Id { get; set; }
+        public double CarBalance { get; set; }
+        public CarType TypeOfTransport { get; set; }
 
         public Car(int balance,CarType type)
         {
@@ -14,6 +15,8 @@ namespace ParkingSimulator
             CarBalance = balance;
             TypeOfTransport = type;
         }
+
+        public Car() { }
 
         public enum CarType
         {

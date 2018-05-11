@@ -22,7 +22,8 @@ namespace ParkingSimulator
                                   "5)Show Parking balance \n"+
                                   "6)Show count of free spots \n" +
                                   "7)Show Transactions.log\n" +
-                                  "8)Show cars");
+                                  "8)Show cars\n" +
+                                  "9)Exit");
                 int.TryParse(Console.ReadLine(),out int choise);
                 switch (choise)
                 {
@@ -58,12 +59,15 @@ namespace ParkingSimulator
                         Console.Clear();
                         ShowCars_Menu();
                         break;
+                    case 9:
+                        break;
                     default:
                         throw new Exception("Incorrect data.Please,try it again");     
                 }
                 Console.WriteLine("Please, for exit enter ESCAPE and to continue - any other key ");
             }
             while (Console.ReadKey().Key != ConsoleKey.Escape);
+            _parking.SaveCars();
             Environment.Exit(0);
         }
 
@@ -158,13 +162,5 @@ namespace ParkingSimulator
             if (choise <= 0 || choise > _parking.Cars.Count) { throw new Exception("There is no such number of сar.Please,try again"); }
             chosenCar = _parking.Cars[choise - 1];
         }
-        public static void LoadCars(Parking parking)
-        {
-            parking.Cars.Add(new Car(600, Car.CarType.Bus));
-            parking.Cars.Add(new Car(600, Car.CarType.Motorcycle));
-            parking.Cars.Add(new Car(600, Car.CarType.Passenger));
-            parking.Cars.Add(new Car(600, Car.CarType.Truck));
-        }
-
     }
 }

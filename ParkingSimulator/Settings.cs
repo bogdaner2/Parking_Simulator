@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ParkingSimulator
 {
-    internal class Settings
+    public class Settings
     {
         public int Timeout  => 3;
         public Dictionary<Car.CarType, int> Prices => new Dictionary<Car.CarType, int>
