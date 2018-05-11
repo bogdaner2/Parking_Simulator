@@ -77,11 +77,14 @@ namespace ParkingSimulator
         }
         private static void ShowLog_Menu()
         {
-            using (StreamReader stream = new StreamReader("Transactions.log"))
-            {
-                var log = stream.ReadToEnd();
-                Console.WriteLine(log);
+            try{
+                using (StreamReader stream = new StreamReader("Transactions.log"))
+                {
+                    var log = stream.ReadToEnd();
+                    Console.WriteLine(log);
+                }
             }
+            catch(Exception e) {throw new Exception("File doesnt exist right now.Please,Wait for the first transaction");}
         }
         private static void ShowBalance_Menu()
         {
