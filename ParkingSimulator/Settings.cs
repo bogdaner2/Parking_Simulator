@@ -1,23 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace ParkingSimulator
 {
     public class Settings
     {
-        public int Timeout  => 3;
-        public Dictionary<Car.CarType, int> Prices => new Dictionary<Car.CarType, int>
-        {
-            {Car.CarType.Truck, 5},
-            {Car.CarType.Passenger, 3},
-            {Car.CarType.Bus, 2},
-            {Car.CarType.Motorcycle, 1}
-        };
-        public int ParkingPlace => 20;
-        public double Fine => 0.3;
+        IConfiguration Configuration { get; }
+        public int Timeout { get; }
+        public Dictionary<Car.CarType, int> Prices { get;  }
+        public int ParkingPlace { get; }
+        public double Fine { get;  }
         private static readonly Lazy<Settings> Lazy = new Lazy<Settings>(() => new Settings());
         public static Settings Instance => Lazy.Value;
-        private Settings() { }
+
+        private Settings()
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("ParkingSettings.json");
+            Configuration = builder.Build();
+            ParkingPlace = int.Parse(Configuration["parkingPlace"]);
+            Timeout = int.Parse(Configuration["timeout"]);
+            Fine = double.Parse(Configuration["fine"], CultureInfo.InvariantCulture);
+            var _prices = new Dictionary<Car.CarType,int>();
+            foreach (var child in Configuration.GetSection("prices").GetChildren())
+            {
+                _prices.Add(
+                    (Car.CarType)Enum.Parse(typeof(Car.CarType), child.Key),
+                    int.Parse(child.Value));
+            }
+            Prices = _prices;
+        }
 
     }
 }

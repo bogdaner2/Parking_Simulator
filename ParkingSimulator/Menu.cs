@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Xml.Serialization;
 
 namespace ParkingSimulator
 {
     internal static class Menu
     {
-        private static Parking _parking = Parking.Instance;
+        private static readonly Parking Parking = Parking.Instance;
         public static void GetMenu()
         {
             do
@@ -67,13 +64,13 @@ namespace ParkingSimulator
                 Console.WriteLine("Please, for exit enter ESCAPE and to continue - any other key ");
             }
             while (Console.ReadKey().Key != ConsoleKey.Escape);
-            _parking.SaveCars();
+            Parking.SaveCars();
             Environment.Exit(0);
         }
 
         private static void ShowLastMinuteLog_Menu()
         {
-            foreach (var transaction in _parking.Transactions)
+            foreach (var transaction in Parking.Transactions)
             {
                 Console.WriteLine(transaction);
             }
@@ -88,7 +85,7 @@ namespace ParkingSimulator
         }
         private static void ShowBalance_Menu()
         {
-            Console.WriteLine("Parking balance: {0:N2} $" , _parking.Balance);
+            Console.WriteLine("Parking balance: {0:N2} $" , Parking.Balance);
         }
         private static void AddCar_Menu()
         {
@@ -101,12 +98,12 @@ namespace ParkingSimulator
             if(type < 1 || type > 4) { throw new Exception("Inccorect data.Please,try again!"); }
             Console.WriteLine("Input balance");
             int.TryParse(Console.ReadLine(), out int balance);
-            if (_parking.Settings.ParkingPlace > _parking.Cars.Count)
+            if (Parking.Settings.ParkingPlace > Parking.Cars.Count)
             {
                 var car = new Car(balance,
                     (Car.CarType)Enum.Parse(typeof(Car.CarType),
                         (type - 1).ToString()));
-                _parking.Cars.Add(car);
+                Parking.Cars.Add(car);
                 Console.WriteLine("Car id: " +
                                   car.Id.ToString()
                                       .Substring(car.Id.ToString().Length - 5) +
@@ -126,7 +123,7 @@ namespace ParkingSimulator
             {
                 throw new Exception("Car balance is insufficient.Please recharge balance and try again");
             }
-            _parking.Cars.Remove(chosenCar);
+            Parking.Cars.Remove(chosenCar);
             Console.WriteLine("Car id: " +
                               chosenCar.Id.ToString()
                               .Substring(chosenCar.Id.ToString().Length - 5) +
@@ -144,13 +141,13 @@ namespace ParkingSimulator
         private static void ShowFreeSpots_Menu()
         {
             Console.WriteLine(
-                string.Format($"On parking {_parking.Cars.Count} cars | " +
-                              $"Free spots : {_parking.Settings.ParkingPlace - _parking.Cars.Count}"));
+                string.Format($"On parking {Parking.Cars.Count} cars | " +
+                              $"Free spots : {Parking.Settings.ParkingPlace - Parking.Cars.Count}"));
         }
         private static void ShowCars_Menu()
         {
             int itterator = 0;
-            foreach (var car in _parking.Cars)
+            foreach (var car in Parking.Cars)
             {
                 itterator++;
                 Console.WriteLine($"{itterator}){car}");
@@ -159,8 +156,8 @@ namespace ParkingSimulator
         private static void CarSelection(out Car chosenCar)
         {
             int.TryParse(Console.ReadLine(), out int choise);
-            if (choise <= 0 || choise > _parking.Cars.Count) { throw new Exception("There is no such number of сar.Please,try again"); }
-            chosenCar = _parking.Cars[choise - 1];
+            if (choise <= 0 || choise > Parking.Cars.Count) { throw new Exception("There is no such number of сar.Please,try again"); }
+            chosenCar = Parking.Cars[choise - 1];
         }
     }
 }
