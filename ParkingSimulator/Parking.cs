@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml.Serialization;
 
 namespace ParkingSimulator
 {
-    internal class Parking
+    public class Parking
     {
         public delegate void TransactionsRefreshHandler();
         public event TransactionsRefreshHandler OnAddTransaction;
 
         private static readonly Lazy<Parking> Lazy = new Lazy<Parking>(() => new Parking());
         public static Parking Instance => Lazy.Value;
-        public List<Car> Cars { get; }
+        public List<Car> Cars { get; set; }
         public List<Transaction> Transactions { get; }
         public double Balance { get; set; }
         public Settings Settings { get; }
@@ -69,6 +70,24 @@ namespace ParkingSimulator
                 earnedAmount = 0;
             }
             firstTick = false;
+        }
+
+        public void SaveCars()
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(List<Car>));
+            using (FileStream fs = new FileStream("Cars.xml", FileMode.Create))
+            {
+                serializer.Serialize(fs, Cars);
+            }
+        }
+
+        public void LoadCars()
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(List<Car>));
+            using (FileStream fs = new FileStream("Cars.xml", FileMode.OpenOrCreate))
+            {
+                Cars = (List<Car>)serializer.Deserialize(fs);
+            }
         }
     }
 }

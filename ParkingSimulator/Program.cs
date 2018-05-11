@@ -10,7 +10,7 @@ namespace ParkingSimulator
             var parking = Parking.Instance;
             var earnedPerMinute = 0.0;
             var firstTick = true;
-            Menu.LoadCars(parking);
+            parking.LoadCars();
             var timerLog = new Timer(
                 e => parking.Log(ref earnedPerMinute,ref firstTick),
                 null,

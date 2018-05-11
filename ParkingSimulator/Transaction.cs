@@ -2,7 +2,7 @@
 
 namespace ParkingSimulator
 {
-    internal class Transaction
+    public class Transaction
     {
         public DateTime Time { get; }
         public Guid Id { get; }
