@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Xml.Serialization;
 
 namespace ParkingSimulator
 {
@@ -67,23 +69,22 @@ namespace ParkingSimulator
 
         private static void ShowLastMinuteLog_Menu()
         {
-            throw new NotImplementedException();
+            foreach (var transaction in _parking.Transactions)
+            {
+                Console.WriteLine(transaction);
+            }
         }
-
         private static void ShowLog_Menu()
         {
             using (StreamReader stream = new StreamReader("Transactions.log"))
             {
-                while ((stream.ReadLine()) != null)
-                {
-                    Console.WriteLine(stream.ReadLine());
-                }
+                var log = stream.ReadToEnd();
+                Console.WriteLine(log);
             }
         }
-
         private static void ShowBalance_Menu()
         {
-            Console.WriteLine("Parking balance: " + _parking.Balance);
+            Console.WriteLine("Parking balance: {0:N2} $" , _parking.Balance);
         }
         private static void AddCar_Menu()
         {
@@ -93,10 +94,24 @@ namespace ParkingSimulator
                               "3)Bus \n" +
                               "4)Motorcycle");
             int.TryParse(Console.ReadLine(), out int type);
-            if(type < 1 || type > 4) { throw new Exception(); }
+            if(type < 1 || type > 4) { throw new Exception("Inccorect data.Please,try again!"); }
             Console.WriteLine("Input balance");
             int.TryParse(Console.ReadLine(), out int balance);
-            Parking.Instance.AddCar(new Car(balance, (Car.CarType) Enum.Parse(typeof(Car.CarType), (type-1).ToString())));
+            if (_parking.Settings.ParkingPlace > _parking.Cars.Count)
+            {
+                var car = new Car(balance,
+                    (Car.CarType)Enum.Parse(typeof(Car.CarType),
+                        (type - 1).ToString()));
+                _parking.Cars.Add(car);
+                Console.WriteLine("Car id: " +
+                                  car.Id.ToString()
+                                      .Substring(car.Id.ToString().Length - 5) +
+                                  " was added");
+            }
+            else
+            {
+                Console.WriteLine("Maximum number of seats occupied");
+            }
         }
         private static void RemoveCar_Menu()
         {
@@ -137,12 +152,19 @@ namespace ParkingSimulator
                 Console.WriteLine($"{itterator}){car}");
             }
         }
-
         private static void CarSelection(out Car chosenCar)
         {
             int.TryParse(Console.ReadLine(), out int choise);
             if (choise <= 0 || choise > _parking.Cars.Count) { throw new Exception("There is no such number of сar.Please,try again"); }
             chosenCar = _parking.Cars[choise - 1];
         }
+        public static void LoadCars(Parking parking)
+        {
+            parking.Cars.Add(new Car(600, Car.CarType.Bus));
+            parking.Cars.Add(new Car(600, Car.CarType.Motorcycle));
+            parking.Cars.Add(new Car(600, Car.CarType.Passenger));
+            parking.Cars.Add(new Car(600, Car.CarType.Truck));
+        }
+
     }
 }

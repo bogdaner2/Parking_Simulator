@@ -1,60 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.IO;
-using System.Linq;
-using ParkingSimulator;
 
 namespace ParkingSimulator
 {
     internal class Parking
     {
-        private readonly ObservableCollection<Transaction> _transactions;
+        public delegate void TransactionsRefreshHandler();
+        public event TransactionsRefreshHandler OnAddTransaction;
+
         private static readonly Lazy<Parking> Lazy = new Lazy<Parking>(() => new Parking());
         public static Parking Instance => Lazy.Value;
         public List<Car> Cars { get; }
-        public ObservableCollection<Transaction> Transactions => _transactions;
+        public List<Transaction> Transactions { get; }
         public double Balance { get; set; }
         public Settings Settings { get; }
 
         private Parking()
         {
             Cars = new List<Car>();
-            _transactions = new ObservableCollection<Transaction>();
-            _transactions.CollectionChanged += AddTransaction;
+            Transactions = new List<Transaction>();
+            OnAddTransaction += Refresh;
             Balance = 0;
             Settings = Settings.Instance;
         }
 
-        private void AddTransaction(object sender, NotifyCollectionChangedEventArgs args)
+        public void AddTransaction(Guid id , double fee)
         {
-                ////Log
-                //using (StreamWriter streamWriter = File.AppendText("Transactions.log"))
-                //{
-                //    Console.WriteLine(args.NewItems.ToString());
-                //    //streamWriter.Write("\r\nLog Entry : ");
-                //    //streamWriter.WriteLine("{0} {1}", DateTime.Now.ToLongTimeString(),
-                //    //    DateTime.Now.ToLongDateString());
-                //    //streamWriter.WriteLine("  :{0}",string.Format(""));
-                //    //streamWriter.WriteLine("-------------------------------");
-                //}
-            foreach (var transaction in args.NewItems )
-            {
-                Console.WriteLine(transaction);
-            }
-
+            Transactions.Add(new Transaction(id,fee));
+            OnAddTransaction?.Invoke();
         }
-
-        public void AddCar(Car car)
+        private void Refresh()
         {
-            if (Settings.ParkingPlace > Cars.Count)
+            Transactions.RemoveAll(x => (DateTime.Now - x.Time).TotalMinutes > 1);
+        }
+        public void ChargeAFee(Parking parking, ref double earned)
+        {
+            foreach (var car in parking.Cars)
             {
-                Cars.Add(car);
+                double fee;
+                if (car.CarBalance > 0)
+                {
+                    fee = parking.Settings.Prices[car.TypeOfTransport];
+                    car.Withdraw(fee);
+                }
+                else
+                {
+                    fee = parking.Settings.Prices[car.TypeOfTransport] * parking.Settings.Fine;
+                    car.Withdraw(fee);
+                }
+                parking.Balance += fee;
+                earned += fee;
+                parking.AddTransaction(car.Id, fee);
             }
-            else {
-                Console.WriteLine("Maximum number of seats occupied");
+        }
+        public void Log(ref double earnedAmount, ref bool firstTick)
+        {
+            if (firstTick != true)
+            {
+                using (StreamWriter streamWriter = File.AppendText("Transactions.log"))
+                {
+                    streamWriter.WriteLine("Parking earned : {0} ", earnedAmount);
+                    streamWriter.WriteLine("{0} {1}", DateTime.Now.ToLongTimeString(),
+                        DateTime.Now.ToLongDateString());
+                    streamWriter.WriteLine("-------------------------------");
+                }
+
+                earnedAmount = 0;
             }
+            firstTick = false;
         }
     }
 }

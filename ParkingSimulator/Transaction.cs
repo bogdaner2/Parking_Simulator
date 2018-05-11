@@ -17,7 +17,7 @@ namespace ParkingSimulator
 
         public override string ToString()
         {
-            return string.Format($"Car Id:{Id} | {Time} {Fee} ");
+            return string.Format($"Car Id:{Id.ToString().Substring(Id.ToString().Length - 5)} | Paid {Fee} $ at {Time}");
         }
     }
 }
