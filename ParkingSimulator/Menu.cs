@@ -74,7 +74,6 @@ namespace ParkingSimulator
                 Console.WriteLine(transaction);
             }
         }
-
         private static void ShowLog_Menu()
         {
             using (StreamReader stream = new StreamReader("Transactions.log"))
@@ -83,10 +82,9 @@ namespace ParkingSimulator
                 Console.WriteLine(log);
             }
         }
-
         private static void ShowBalance_Menu()
         {
-            Console.WriteLine("Parking balance: " + _parking.Balance);
+            Console.WriteLine("Parking balance: {0:N2} $" , _parking.Balance);
         }
         private static void AddCar_Menu()
         {
@@ -96,15 +94,19 @@ namespace ParkingSimulator
                               "3)Bus \n" +
                               "4)Motorcycle");
             int.TryParse(Console.ReadLine(), out int type);
-            if(type < 1 || type > 4) { throw new Exception(); }
+            if(type < 1 || type > 4) { throw new Exception("Inccorect data.Please,try again!"); }
             Console.WriteLine("Input balance");
             int.TryParse(Console.ReadLine(), out int balance);
             if (_parking.Settings.ParkingPlace > _parking.Cars.Count)
             {
-                _parking.Cars.Add(
-                    new Car(balance, 
-                           (Car.CarType)Enum.Parse(typeof(Car.CarType),
-                           (type - 1).ToString())));
+                var car = new Car(balance,
+                    (Car.CarType)Enum.Parse(typeof(Car.CarType),
+                        (type - 1).ToString()));
+                _parking.Cars.Add(car);
+                Console.WriteLine("Car id: " +
+                                  car.Id.ToString()
+                                      .Substring(car.Id.ToString().Length - 5) +
+                                  " was added");
             }
             else
             {
@@ -150,19 +152,19 @@ namespace ParkingSimulator
                 Console.WriteLine($"{itterator}){car}");
             }
         }
-
         private static void CarSelection(out Car chosenCar)
         {
             int.TryParse(Console.ReadLine(), out int choise);
             if (choise <= 0 || choise > _parking.Cars.Count) { throw new Exception("There is no such number of сar.Please,try again"); }
             chosenCar = _parking.Cars[choise - 1];
         }
+        public static void LoadCars(Parking parking)
+        {
+            parking.Cars.Add(new Car(600, Car.CarType.Bus));
+            parking.Cars.Add(new Car(600, Car.CarType.Motorcycle));
+            parking.Cars.Add(new Car(600, Car.CarType.Passenger));
+            parking.Cars.Add(new Car(600, Car.CarType.Truck));
+        }
 
-        public static void LoadCars() { }
-
-        public static void SaveCars() { }
-
-        public static void LoadSettings() { }
-        
     }
 }
