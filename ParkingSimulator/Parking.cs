@@ -71,7 +71,6 @@ namespace ParkingSimulator
             }
             firstTick = false;
         }
-
         public void SaveCars()
         {
             XmlSerializer serializer = new XmlSerializer(typeof(List<Car>));
@@ -80,14 +79,17 @@ namespace ParkingSimulator
                 serializer.Serialize(fs, Cars);
             }
         }
-
         public void LoadCars()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<Car>));
-            using (FileStream fs = new FileStream("Cars.xml", FileMode.OpenOrCreate))
+            try
             {
-                Cars = (List<Car>)serializer.Deserialize(fs);
+                XmlSerializer serializer = new XmlSerializer(typeof(List<Car>));
+                using (FileStream fs = new FileStream("Cars.xml", FileMode.OpenOrCreate))
+                {
+                    Cars = (List<Car>) serializer.Deserialize(fs);
+                }
             }
+            catch(Exception e) { throw new Exception("Сant load cars database.Maybe,the file was corrupted");}
         }
     }
 }
